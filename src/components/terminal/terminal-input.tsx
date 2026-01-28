@@ -1,60 +1,109 @@
 'use client'
-import { RootUser } from './root-user'
-import { useEffect, useRef } from 'react'
 
-interface TerminalInputProps {
+import { cn } from '@/lib/utils'
+import { useEffect, useRef } from 'react'
+import { RootUser } from './root-user'
+import { tokenize, getTokenClass } from '@/lib/tokenizer'
+
+type Props = {
   input: string
   setInput: (input: string) => void
   onEnter: (command: string) => void
+  commandHistory: string[]
+  setCommandHistoryIndex: (index: number) => void
+  commandHistoryIndex: number
 }
 
 export const TerminalInput = ({
   input,
   setInput,
   onEnter,
-}: TerminalInputProps) => {
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+  commandHistory,
+  setCommandHistoryIndex,
+  commandHistoryIndex,
+}: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const displayRef = useRef<HTMLDivElement>(null)
 
-  // Auto-focus on mount
-  useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      onEnter(input)
-      setInput('')
-    }
-  }
-
-  // Auto-resize textarea
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.style.height = 'auto'
-      inputRef.current.style.height = inputRef.current.scrollHeight + 'px'
+      inputRef.current.focus()
+    }
+  }, [])
+
+  // Sync scroll between transparent input and visible display
+  useEffect(() => {
+    if (inputRef.current && displayRef.current) {
+      displayRef.current.scrollLeft = inputRef.current.scrollLeft
     }
   }, [input])
 
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onEnter(input)
+      setInput('')
+      setCommandHistoryIndex(commandHistory.length + 1)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (commandHistoryIndex > 0) {
+        const newIndex = commandHistoryIndex - 1
+        setCommandHistoryIndex(newIndex)
+        setInput(commandHistory[newIndex])
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (commandHistoryIndex < commandHistory.length) {
+        const newIndex = commandHistoryIndex + 1
+        setCommandHistoryIndex(newIndex)
+        setInput(commandHistory[newIndex] || '')
+      }
+    }
+  }
+
+  const renderTokens = () => {
+    if (input === '') return <span /> // Return empty span to not render anything
+    const tokens = tokenize(input)
+    return tokens
+      .map((token, index) => (
+        <span key={index} className={getTokenClass(token.type)}>
+          {token.value}
+        </span>
+      ))
+      .reduce<React.ReactNode | null>(
+        (prev, curr) => (prev ? <>{prev} {curr}</> : curr),
+        null,
+      )
+  }
+
+
   return (
-    <div className="flex gap-2 text-emerald-400 font-mono">
-      <div className="flex gap-1 whitespace-nowrap select-none">
-        <span className="text-emerald-500">&gt;&gt;</span>
+    <div className={cn('flex flex-row items-center gap-2')}>
+      <label htmlFor="terminal-input" className="flex-shrink-0">
         <RootUser />
-        <span className="text-emerald-500">~/</span>
-      </div>
-      <div className="flex-1 relative">
-        <textarea
+        <span className="text-gray-400">:~$</span>
+      </label>
+      <div className="relative flex-1" onClick={() => inputRef.current?.focus()}>
+        {/* Visible, styled output */}
+        <div
+          ref={displayRef}
+          className="whitespace-pre w-full overflow-x-hidden"
+        >
+          {renderTokens()}
+          <span className="terminal-input-cursor" />
+        </div>
+        {/* Hidden, functional input */}
+        <input
           ref={inputRef}
+          id="terminal-input"
+          type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="bg-transparent border-none outline-none text-white w-full resize-none overflow-hidden font-mono leading-relaxed"
-          rows={1}
-          spellCheck={false}
+          className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent focus:outline-none"
           autoComplete="off"
-          autoCorrect="off"
           autoCapitalize="off"
+          autoCorrect="off"
         />
       </div>
     </div>

@@ -1,15 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { CommandOutput } from './terminal/command-output'
 import { InitialMessage } from './terminal/initial-message'
 import { TerminalInput } from './terminal/terminal-input'
 import { UserCommand } from './terminal/user-command'
 import { root_user } from '@/lib/constants'
+import { TerminalLine } from './terminal/terminal-line'
 
 export const Terminal = () => {
   const [input, setInput] = useState('')
   const [showInput, setShowInput] = useState(false)
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
+  const [commandHistoryIndex, setCommandHistoryIndex] = useState(0)
+  const terminalRef = useRef<HTMLDivElement>(null)
 
   const handleInitialMessageLoad = () => {
     setShowInput(true)
@@ -18,6 +22,16 @@ export const Terminal = () => {
   const [messages, setMessages] = useState<React.ReactNode[]>([
     <InitialMessage key="initial" onLoad={handleInitialMessageLoad} />,
   ])
+
+  useEffect(() => {
+    if (terminalRef.current) {
+      setTimeout(() => {
+        if (terminalRef.current) {
+          terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+        }
+      }, 0)
+    }
+  }, [messages])
 
   const commands = [
     'help: Show this help message',
@@ -29,6 +43,18 @@ export const Terminal = () => {
   ]
 
   const handleEnter = (command: string) => {
+    if (command.trim() === '') {
+      setMessages([
+        ...messages,
+        <UserCommand key={messages.length} command="" />,
+      ])
+      return
+    }
+
+    const newCommandHistory = [...commandHistory, command]
+    setCommandHistory(newCommandHistory)
+    setCommandHistoryIndex(newCommandHistory.length)
+
     const newMessages = [
       ...messages,
       <UserCommand key={messages.length} command={command} />,
@@ -38,7 +64,7 @@ export const Terminal = () => {
     switch (cmd) {
       case 'echo':
         newMessages.push(
-          <CommandOutput key={messages.length + 1} output={args.join(' ')} />,
+          <TerminalLine key={messages.length + 1} line={args.join(' ')} />,
         )
         break
       case 'clear':
@@ -54,10 +80,10 @@ export const Terminal = () => {
               <div>
                 <p>Available commands:</p>
                 <ul className="list-disc list-inside">
-                  {commands.map((cmd) => {
-                    const [first, ...rest] = cmd.split(' ')
+                  {commands.map((cmdDef) => {
+                    const [first, ...rest] = cmdDef.split(' ')
                     return (
-                      <li key={cmd} className="text-emerald-200">
+                      <li key={cmdDef} className="text-emerald-200">
                         <span className="text-yellow-500">{first}</span>{' '}
                         {rest.join(' ')}
                       </li>
@@ -92,9 +118,9 @@ export const Terminal = () => {
         break
       default:
         newMessages.push(
-          <CommandOutput
+          <TerminalLine
             key={messages.length + 1}
-            output={`command not found: ${cmd}`}
+            line={`command not found: ${cmd}`}
           />,
         )
         break
@@ -102,9 +128,20 @@ export const Terminal = () => {
     setMessages(newMessages)
   }
 
+  const focusInput = () => {
+    const inputElement = document.getElementById('terminal-input')
+    if (inputElement) {
+      inputElement.focus()
+    }
+  }
+
   return (
-    <div className="overflow-y-auto flex-1 h-screen p-4 border flex flex-col border-dashed size-full">
-      <div className="flex-1 flex flex-col gap-3">
+    <div
+      ref={terminalRef}
+      className="terminal flex-1 h-screen p-4 flex flex-col size-full"
+      onClick={focusInput}
+    >
+      <div className="flex flex-col gap-3">
         {messages.map((msg, i) => (
           <div key={i}>{msg}</div>
         ))}
@@ -115,6 +152,9 @@ export const Terminal = () => {
             input={input}
             setInput={setInput}
             onEnter={handleEnter}
+            commandHistory={commandHistory}
+            setCommandHistoryIndex={setCommandHistoryIndex}
+            commandHistoryIndex={commandHistoryIndex}
           />
         )}
       </div>

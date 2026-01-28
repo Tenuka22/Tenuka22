@@ -1,12 +1,12 @@
+import { TerminalLine } from './terminal-line'
 import { RootUser } from './root-user'
 
 export const UserCommand = ({ command }: { command: string }) => {
   return (
-    <div className="flex gap-1 flex-row text-emerald-500 -mb-2 h-fit">
-      <span>{'>>'}</span>
+    <div className="flex flex-row items-center gap-2">
       <RootUser />
-      <span>{'/~'}</span>
-      <span className="text-yellow-200">{command}</span>
+      <span className="text-gray-400">:~$</span>
+      <TerminalLine line={command} />
     </div>
   )
 }
