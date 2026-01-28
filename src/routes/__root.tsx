@@ -31,11 +31,12 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    // TODO: Add dark mode later
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="size-full flex flex-col">
         {children}
         <TanStackDevtools
           config={{
