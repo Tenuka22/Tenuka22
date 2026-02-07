@@ -7,19 +7,21 @@ import { TerminalInput } from './terminal/terminal-input'
 import { UserCommand } from './terminal/user-command'
 import { root_user } from '@/lib/constants'
 import { TerminalLine } from './terminal/terminal-line'
+import { LinuxSandbox } from './terminal/linux-sandbox' // Import LinuxSandbox
 
 export const Terminal = () => {
   const [input, setInput] = useState('')
   const [showInput, setShowInput] = useState(false)
-  const [commandHistory, setCommandHistory] = useState<string[]>([])
+  const [commandHistory, setCommandHistory] = useState<Array<string>>([])
   const [commandHistoryIndex, setCommandHistoryIndex] = useState(0)
+  const [isSandboxActive, setIsSandboxActive] = useState(false) // New state for sandbox
   const terminalRef = useRef<HTMLDivElement>(null)
 
   const handleInitialMessageLoad = () => {
     setShowInput(true)
   }
 
-  const [messages, setMessages] = useState<React.ReactNode[]>([
+  const [messages, setMessages] = useState<Array<React.ReactNode>>([
     <InitialMessage key="initial" onLoad={handleInitialMessageLoad} />,
   ])
 
@@ -31,7 +33,7 @@ export const Terminal = () => {
         }
       }, 0)
     }
-  }, [messages])
+  }, [messages, isSandboxActive]) // Add isSandboxActive to dependencies
 
   const commands = [
     'help: Show this help message',
@@ -40,13 +42,14 @@ export const Terminal = () => {
     'date: Show the current date',
     'whoami: Show the current user',
     'motd: Show the message of the day',
+    'sandbox: Enter the Deno sandbox', // Add sandbox command
   ]
 
   const handleEnter = (command: string) => {
     if (command.trim() === '') {
-      setMessages([
-        ...messages,
-        <UserCommand key={messages.length} command="" />,
+      setMessages((prev) => [
+        ...prev,
+        <UserCommand key={prev.length} command="" />,
       ])
       return
     }
@@ -54,6 +57,12 @@ export const Terminal = () => {
     const newCommandHistory = [...commandHistory, command]
     setCommandHistory(newCommandHistory)
     setCommandHistoryIndex(newCommandHistory.length)
+
+    if (isSandboxActive) {
+      // If sandbox is active, all commands are handled by it
+      // This case should ideally not be reached if input is hidden/disabled
+      return
+    }
 
     const newMessages = [
       ...messages,
@@ -67,6 +76,19 @@ export const Terminal = () => {
           <TerminalLine key={messages.length + 1} line={args.join(' ')} />,
         )
         break
+      case 'sandbox': // Handle sandbox command
+        setIsSandboxActive(true)
+        setMessages([]) // Clear terminal messages when entering sandbox
+        return
+      case 'clear':
+        newMessages.push(
+          <TerminalLine key={messages.length + 1} line={args.join(' ')} />,
+        )
+        break
+      case 'sandbox': // Handle sandbox command
+        setIsSandboxActive(true)
+        setMessages([]) // Clear terminal messages when entering sandbox
+        return
       case 'clear':
         setMessages([
           <InitialMessage key="initial" onLoad={handleInitialMessageLoad} />,
@@ -128,6 +150,14 @@ export const Terminal = () => {
     setMessages(newMessages)
   }
 
+  const handleSandboxExit = () => {
+    setIsSandboxActive(false)
+    setMessages([
+      <CommandOutput key="sandbox-exit" output="Exited Deno Sandbox." />,
+      <InitialMessage key="initial" onLoad={handleInitialMessageLoad} />,
+    ])
+  }
+
   const focusInput = () => {
     const inputElement = document.getElementById('terminal-input')
     if (inputElement) {
@@ -141,23 +171,29 @@ export const Terminal = () => {
       className="terminal flex-1 h-screen p-4 flex flex-col size-full"
       onClick={focusInput}
     >
-      <div className="flex flex-col gap-3">
-        {messages.map((msg, i) => (
-          <div key={i}>{msg}</div>
-        ))}
-      </div>
-      <div className="flex flex-col gap-2 pt-4">
-        {showInput && (
-          <TerminalInput
-            input={input}
-            setInput={setInput}
-            onEnter={handleEnter}
-            commandHistory={commandHistory}
-            setCommandHistoryIndex={setCommandHistoryIndex}
-            commandHistoryIndex={commandHistoryIndex}
-          />
-        )}
-      </div>
+      {isSandboxActive ? (
+        <LinuxSandbox onExit={handleSandboxExit} />
+      ) : (
+        <>
+          <div className="flex flex-col gap-3">
+            {messages.map((msg, i) => (
+              <div key={i}>{msg}</div>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 pt-4">
+            {showInput && (
+              <TerminalInput
+                input={input}
+                setInput={setInput}
+                onEnter={handleEnter}
+                commandHistory={commandHistory}
+                setCommandHistoryIndex={setCommandHistoryIndex}
+                commandHistoryIndex={commandHistoryIndex}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   )
 }
