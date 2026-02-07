@@ -15,6 +15,9 @@ export const Terminal = () => {
   const [commandHistory, setCommandHistory] = useState<Array<string>>([])
   const [commandHistoryIndex, setCommandHistoryIndex] = useState(0)
   const [isSandboxActive, setIsSandboxActive] = useState(false) // New state for sandbox
+  const [hiddenMessages, setHiddenMessages] = useState<Array<React.ReactNode>>(
+    [],
+  )
   const terminalRef = useRef<HTMLDivElement>(null)
 
   const handleInitialMessageLoad = () => {
@@ -76,18 +79,17 @@ export const Terminal = () => {
           <TerminalLine key={messages.length + 1} line={args.join(' ')} />,
         )
         break
-      case 'sandbox': // Handle sandbox command
+      case 'sandbox':
+        setHiddenMessages(messages) // Save current messages
+        setMessages([
+          // Display a message for entering sandbox
+          <UserCommand key={messages.length} command={command} />,
+          <CommandOutput
+            key="sandbox-enter"
+            output="Entering Deno Sandbox..."
+          />,
+        ])
         setIsSandboxActive(true)
-        setMessages([]) // Clear terminal messages when entering sandbox
-        return
-      case 'clear':
-        newMessages.push(
-          <TerminalLine key={messages.length + 1} line={args.join(' ')} />,
-        )
-        break
-      case 'sandbox': // Handle sandbox command
-        setIsSandboxActive(true)
-        setMessages([]) // Clear terminal messages when entering sandbox
         return
       case 'clear':
         setMessages([
@@ -152,10 +154,11 @@ export const Terminal = () => {
 
   const handleSandboxExit = () => {
     setIsSandboxActive(false)
-    setMessages([
+    setMessages((prevMessages) => [
+      ...hiddenMessages, // Restore previously hidden messages
       <CommandOutput key="sandbox-exit" output="Exited Deno Sandbox." />,
-      <InitialMessage key="initial" onLoad={handleInitialMessageLoad} />,
     ])
+    setHiddenMessages([]) // Clear hidden messages after restoring
   }
 
   const focusInput = () => {
