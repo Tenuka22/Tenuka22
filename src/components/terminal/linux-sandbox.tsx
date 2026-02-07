@@ -2,11 +2,15 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { CommandOutput } from './command-output'
 import { useServerFn } from '@tanstack/react-start'
+import {
+  executeSandboxCommand,
+  startSandbox,
+  stopSandbox,
+} from '../../../server/actions'
+import { CommandOutput } from './command-output'
 import { TerminalInput } from './terminal-input'
 import { UserCommand } from './user-command'
-import { startSandbox, executeSandboxCommand, stopSandbox } from '../../../server/actions'
 
 interface LinuxSandboxProps {
   onExit: () => void
@@ -91,7 +95,9 @@ export const LinuxSandbox: React.FC<LinuxSandboxProps> = ({ onExit }) => {
 
     if (sessionId) {
       try {
-        const data = await executeSandboxCommandFn({ data: { sessionId, command } })
+        const data = await executeSandboxCommandFn({
+          data: { sessionId, command },
+        })
         if (data.output) {
           setOutput((prev) => [
             ...prev,

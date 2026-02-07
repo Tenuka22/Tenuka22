@@ -1,5 +1,6 @@
 import React from 'react'
-import { tokenize, getTokenClass, Token } from '@/lib/tokenizer'
+import type { Token } from '@/lib/tokenizer'
+import { getTokenClass, tokenize } from '@/lib/tokenizer'
 
 interface TerminalLineProps {
   line: string
@@ -17,7 +18,14 @@ export const TerminalLine: React.FC<TerminalLineProps> = React.memo(
             </span>
           ))
           .reduce<React.ReactNode | null>(
-            (prev, curr) => (prev ? <>{prev} {curr}</> : curr),
+            (prev, curr) =>
+              prev ? (
+                <>
+                  {prev} {curr}
+                </>
+              ) : (
+                curr
+              ),
             null,
           )}
       </div>

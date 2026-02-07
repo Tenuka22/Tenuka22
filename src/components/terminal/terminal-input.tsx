@@ -1,15 +1,15 @@
 'use client'
 
-import { cn } from '@/lib/utils'
 import { useEffect, useRef } from 'react'
 import { RootUser } from './root-user'
-import { tokenize, getTokenClass } from '@/lib/tokenizer'
+import { cn } from '@/lib/utils'
+import { getTokenClass, tokenize } from '@/lib/tokenizer'
 
-type Props = {
+interface Props {
   input: string
   setInput: (input: string) => void
   onEnter: (command: string) => void
-  commandHistory: string[]
+  commandHistory: Array<string>
   setCommandHistoryIndex: (index: number) => void
   commandHistoryIndex: number
 }

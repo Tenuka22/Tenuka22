@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
-import { Sandbox, DenoRepl } from '@deno/sandbox'
+import { Sandbox } from '@deno/sandbox'
+import type { DenoRepl } from '@deno/sandbox'
 
 interface SandboxSession {
   sandbox: Sandbox

@@ -13,10 +13,8 @@ export interface Token {
   value: string
 }
 
-
-
-export const tokenize = (input: string): Token[] => {
-  const tokens: Token[] = []
+export const tokenize = (input: string): Array<Token> => {
+  const tokens: Array<Token> = []
   let remainingInput = input.trim()
 
   // Handle command token first
@@ -26,7 +24,7 @@ export const tokenize = (input: string): Token[] => {
     remainingInput = remainingInput.substring(commandMatch[0].length).trim()
   }
 
-  const otherTokenPatterns: { type: TokenType; regex: RegExp }[] = [
+  const otherTokenPatterns: Array<{ type: TokenType; regex: RegExp }> = [
     { type: 'string', regex: /^"(?:\\.|[^"\\])*"/ },
     { type: 'string', regex: /^'(?:\\.|[^'\\])*'/ },
     { type: 'flag', regex: /^--\w+(-\w+)*/ },

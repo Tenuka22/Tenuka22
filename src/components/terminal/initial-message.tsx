@@ -1,8 +1,8 @@
 'use client'
 
-import { ascii_name } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { RootUser } from './root-user'
+import { ascii_name } from '@/lib/constants'
 import { getClientInfo } from '@/lib/client'
 
 interface InitialMessageProps {
@@ -25,12 +25,10 @@ export const InitialMessage = ({ onLoad }: InitialMessageProps) => {
 
   return (
     <div className="grid lg:grid-cols-2 place-items-center size-full flex-1">
-      {!asciiClosed && (
-        <pre className="font-mono p-4 lg:p-2 lg:text-sm sm:text-xs text-[0.5rem] leading-relaxed h-fit">
-          {ascii_name}
-        </pre>
-      )}
-      {!infoClosed && info && (
+      <pre className="font-mono p-4 lg:p-2 lg:text-sm sm:text-xs text-[0.5rem] leading-relaxed h-fit">
+        {ascii_name}
+      </pre>
+      {info && (
         <div className="flex flex-col text-orange-300">
           <RootUser />
           {Object.entries(info).map(([k, v]) => (

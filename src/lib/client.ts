@@ -11,12 +11,12 @@ export const getClientInfo = () => {
     os: nav.platform || 'Unknown',
     userAgent: nav.userAgent,
     browserLanguage: nav.language,
-    languages: nav.languages ?? [],
+    languages: nav.languages,
 
     // Hardware
-    cpuCores: nav.hardwareConcurrency ?? null,
-    deviceMemoryGB: (nav as any).deviceMemory ?? null,
-    maxTouchPoints: nav.maxTouchPoints ?? 0,
+    cpuCores: nav.hardwareConcurrency,
+    deviceMemoryGB: (nav as any).deviceMemory,
+    maxTouchPoints: nav.maxTouchPoints,
 
     // Screen
     screenResolution: `${screen.width}x${screen.height}`,
