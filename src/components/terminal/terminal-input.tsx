@@ -31,13 +31,24 @@ export const TerminalInput = ({
     }
   }, [])
 
+  useEffect(() => {
+    const handleDocumentClick = () => {
+      inputRef.current?.focus()
+    }
+
+    document.addEventListener('click', handleDocumentClick)
+
+    return () => {
+      document.removeEventListener('click', handleDocumentClick)
+    }
+  }, [])
+
   // Sync scroll between transparent input and visible display
   useEffect(() => {
     if (inputRef.current && displayRef.current) {
       displayRef.current.scrollLeft = inputRef.current.scrollLeft
     }
   }, [input])
-
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -71,11 +82,17 @@ export const TerminalInput = ({
         </span>
       ))
       .reduce<React.ReactNode | null>(
-        (prev, curr) => (prev ? <>{prev} {curr}</> : curr),
+        (prev, curr) =>
+          prev ? (
+            <>
+              {prev} {curr}
+            </>
+          ) : (
+            curr
+          ),
         null,
       )
   }
-
 
   return (
     <div className={cn('flex flex-row items-center gap-2')}>
@@ -83,7 +100,10 @@ export const TerminalInput = ({
         <RootUser />
         <span className="text-gray-400">:~$</span>
       </label>
-      <div className="relative flex-1" onClick={() => inputRef.current?.focus()}>
+      <div
+        className="relative flex-1"
+        onClick={() => inputRef.current?.focus()}
+      >
         {/* Visible, styled output */}
         <div
           ref={displayRef}
