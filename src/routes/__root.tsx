@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {
   HeadContent,
   Outlet,
@@ -5,9 +6,17 @@ import {
   createRootRoute,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
+
+const TanStackDevtools =
+  import.meta.env.PROD || typeof window === 'undefined'
+    ? () => null
+    : React.lazy(() =>
+        import('@tanstack/react-devtools').then((res) => ({
+          default: res.TanStackDevtools,
+        })),
+      )
 
 export const Route = createRootRoute({
   head: () => ({
@@ -34,17 +43,19 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <Outlet />
-      <TanStackDevtools
-        config={{
-          position: 'bottom-right',
-        }}
-        plugins={[
-          {
-            name: 'Tanstack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-        ]}
-      />
+      <React.Suspense fallback={null}>
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
+      </React.Suspense>
     </>
   ),
 

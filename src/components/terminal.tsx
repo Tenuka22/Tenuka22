@@ -6,27 +6,62 @@ import { InitialMessage } from './terminal/initial-message'
 import { TerminalInput } from './terminal/terminal-input'
 import { UserCommand } from './terminal/user-command'
 import { TerminalLine } from './terminal/terminal-line'
-import { LinuxSandbox } from './terminal/linux-sandbox' // Import LinuxSandbox
-import { root_user, user_info } from '@/lib/constants'
+import { AnimatedCommandOutput } from './terminal/animated-command-output'
+import { user_info as static_user_info } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { getUserInfo } from '../../server/actions'
 
 export const Terminal = () => {
   const [input, setInput] = useState('')
   const [showInput, setShowInput] = useState(false)
   const [commandHistory, setCommandHistory] = useState<Array<string>>([])
   const [commandHistoryIndex, setCommandHistoryIndex] = useState(0)
-  const [isSandboxActive, setIsSandboxActive] = useState(false) // New state for sandbox
-  const [hiddenMessages, setHiddenMessages] = useState<Array<React.ReactNode>>(
-    [],
-  )
+  const [userInfo, setUserInfo] = useState<any>(static_user_info)
   const terminalRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const fetchAIInfo = async () => {
+      try {
+        const info = await getUserInfo()
+        if (info && !info.error) {
+          setUserInfo(info)
+          setMessages((prev) =>
+            prev.map((msg) => {
+              if (
+                typeof msg === 'object' &&
+                msg !== null &&
+                'key' in msg &&
+                msg.key === 'initial'
+              ) {
+                return (
+                  <InitialMessage
+                    key="initial"
+                    onLoad={handleInitialMessageLoad}
+                    userInfo={info}
+                  />
+                )
+              }
+              return msg
+            }),
+          )
+        }
+      } catch (e) {
+        console.error('Failed to fetch AI info', e)
+      }
+    }
+    fetchAIInfo()
+  }, [])
 
   const handleInitialMessageLoad = () => {
     setShowInput(true)
   }
 
   const [messages, setMessages] = useState<Array<React.ReactNode>>([
-    <InitialMessage key="initial" onLoad={handleInitialMessageLoad} />,
+    <InitialMessage
+      key="initial"
+      onLoad={handleInitialMessageLoad}
+      userInfo={userInfo}
+    />,
   ])
 
   useEffect(() => {
@@ -37,7 +72,7 @@ export const Terminal = () => {
         }
       }, 0)
     }
-  }, [messages, isSandboxActive]) // Add isSandboxActive to dependencies
+  }, [messages])
 
   const commands = [
     'help: Show this help message',
@@ -51,7 +86,6 @@ export const Terminal = () => {
     'contact: Get in touch with Tenuka',
     "github: Open Tenuka's GitHub profile",
     "linkedin: Open Tenuka's LinkedIn profile",
-    'sandbox: Enter the Deno sandbox (In Development)',
     "blog: Read Tenuka's blog posts (Strikethrough)",
     "resume: View Tenuka's resume (Strikethrough)",
   ]
@@ -69,10 +103,6 @@ export const Terminal = () => {
     setCommandHistory(newCommandHistory)
     setCommandHistoryIndex(newCommandHistory.length)
 
-    if (isSandboxActive) {
-      return
-    }
-
     // Show user command immediately
     setMessages((prev) => [
       ...prev,
@@ -88,23 +118,13 @@ export const Terminal = () => {
           <TerminalLine key={prev.length} line={args.join(' ')} />,
         ])
         break
-      case 'sandbox':
-        setHiddenMessages((prev) => [
-          ...messages,
-          <UserCommand key={messages.length} command={command} />,
-        ])
-        setMessages([
-          <UserCommand key={0} command={command} />,
-          <CommandOutput
-            key="sandbox-enter"
-            output="Entering Deno Sandbox..."
-          />,
-        ])
-        setIsSandboxActive(true)
-        return
       case 'clear':
         setMessages([
-          <InitialMessage key="initial" onLoad={handleInitialMessageLoad} />,
+          <InitialMessage
+            key="initial"
+            onLoad={handleInitialMessageLoad}
+            userInfo={userInfo}
+          />,
         ])
         return
       case 'help':
@@ -118,12 +138,7 @@ export const Terminal = () => {
                 <ul className="list-disc list-inside">
                   {commands.map((cmdDef) => {
                     const [first, ...rest] = cmdDef.split(' ')
-                    const isStrikethrough = [
-                      'sandbox:',
-                      'projects:',
-                      'blog:',
-                      'resume:',
-                    ].includes(first)
+                    const isStrikethrough = ['blog:', 'resume:'].includes(first)
                     return (
                       <li
                         key={cmdDef}
@@ -152,7 +167,12 @@ export const Terminal = () => {
       case 'whoami':
         setMessages((prev) => [
           ...prev,
-          <CommandOutput key={prev.length} output={<span>{user_info.name}</span>} />,
+          <CommandOutput
+            key={prev.length}
+            output={
+              <span dangerouslySetInnerHTML={{ __html: userInfo.name }} />
+            }
+          />,
         ])
         break
       case 'motd':
@@ -176,24 +196,25 @@ export const Terminal = () => {
       case 'about':
         setMessages((prev) => [
           ...prev,
-          <CommandOutput key={prev.length} output={user_info.about} />,
+          <AnimatedCommandOutput
+            key={prev.length}
+            output={
+              <div dangerouslySetInnerHTML={{ __html: userInfo.about }} />
+            }
+          />,
         ])
         break
       case 'projects':
         setMessages((prev) => [
           ...prev,
-          <CommandOutput
+          <AnimatedCommandOutput
             key={prev.length}
             output={
               <div>
                 <p>Retrieving project information...</p>
-                <p>
-                  Integration with Gemini and Deno Deploy database is under
-                  development.
-                </p>
                 <p>Here are some sample projects:</p>
                 <ul className="list-disc list-inside">
-                  {user_info.projects.map((project) => (
+                  {userInfo.projects?.map((project: any) => (
                     <li key={project.name}>
                       <a
                         href={project.url}
@@ -223,19 +244,19 @@ export const Terminal = () => {
                 <p>
                   Email:{' '}
                   <a
-                    href={`mailto:${user_info.email}`}
+                    href={`mailto:${userInfo.email}`}
                     className="text-blue-400 hover:underline"
                   >
-                    {user_info.email}
+                    {userInfo.email}
                   </a>
                 </p>
                 <p>
                   Phone:{' '}
                   <a
-                    href={`tel:${user_info.phone}`}
+                    href={`tel:${userInfo.phone || static_user_info.phone}`}
                     className="text-blue-400 hover:underline"
                   >
-                    {user_info.phone}
+                    {userInfo.phone || static_user_info.phone}
                   </a>
                 </p>
               </div>
@@ -244,22 +265,22 @@ export const Terminal = () => {
         ])
         break
       case 'github':
-        window.open(user_info.github, '_blank')
+        window.open(userInfo.github, '_blank')
         setMessages((prev) => [
           ...prev,
           <CommandOutput
             key={prev.length}
-            output={`Opening GitHub: ${user_info.github}`}
+            output={`Opening GitHub: ${userInfo.github}`}
           />,
         ])
         break
       case 'linkedin':
-        window.open(user_info.linkedin, '_blank')
+        window.open(userInfo.linkedin, '_blank')
         setMessages((prev) => [
           ...prev,
           <CommandOutput
             key={prev.length}
-            output={`Opening LinkedIn: ${user_info.linkedin}`}
+            output={`Opening LinkedIn: ${userInfo.linkedin}`}
           />,
         ])
         break
@@ -282,12 +303,6 @@ export const Terminal = () => {
     }
   }
 
-  const handleSandboxExit = () => {
-    setIsSandboxActive(false)
-    setMessages(hiddenMessages) // Restore previously hidden messages
-    setHiddenMessages([]) // Clear hidden messages after restoring
-  }
-
   const focusInput = () => {
     const inputElement = document.getElementById('terminal-input')
     if (inputElement) {
@@ -301,29 +316,26 @@ export const Terminal = () => {
       className="terminal flex-1 h-screen p-4 flex flex-col size-full"
       onClick={focusInput}
     >
-      {isSandboxActive ? (
-        <LinuxSandbox onExit={handleSandboxExit} />
-      ) : (
-        <>
-          <div className="flex flex-col gap-3">
-            {messages.map((msg, i) => (
-              <div key={i}>{msg}</div>
-            ))}
-          </div>
-          <div className="flex flex-col gap-2 pt-4">
-            {showInput && (
-              <TerminalInput
-                input={input}
-                setInput={setInput}
-                onEnter={handleEnter}
-                commandHistory={commandHistory}
-                setCommandHistoryIndex={setCommandHistoryIndex}
-                commandHistoryIndex={commandHistoryIndex}
-              />
-            )}
-          </div>
-        </>
-      )}
+      <>
+        <div className="flex flex-col gap-3">
+          {messages.map((msg, i) => (
+            <div key={i}>{msg}</div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-2 pt-4">
+          {showInput && (
+            <TerminalInput
+              input={input}
+              setInput={setInput}
+              onEnter={handleEnter}
+              commandHistory={commandHistory}
+              setCommandHistoryIndex={setCommandHistoryIndex}
+              commandHistoryIndex={commandHistoryIndex}
+              userInfo={userInfo}
+            />
+          )}
+        </div>
+      </>
     </div>
   )
 }

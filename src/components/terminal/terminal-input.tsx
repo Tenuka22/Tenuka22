@@ -12,6 +12,7 @@ interface Props {
   commandHistory: Array<string>
   setCommandHistoryIndex: (index: number) => void
   commandHistoryIndex: number
+  userInfo?: any
 }
 
 export const TerminalInput = ({
@@ -21,6 +22,7 @@ export const TerminalInput = ({
   commandHistory,
   setCommandHistoryIndex,
   commandHistoryIndex,
+  userInfo,
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const displayRef = useRef<HTMLDivElement>(null)
@@ -97,7 +99,7 @@ export const TerminalInput = ({
   return (
     <div className={cn('flex flex-row items-center gap-2')}>
       <label htmlFor="terminal-input" className="flex-shrink-0">
-        <RootUser />
+        <RootUser name={userInfo?.plainName} />
         <span className="text-gray-400">:~$</span>
       </label>
       <div

@@ -7,12 +7,11 @@ import { getClientInfo } from '@/lib/client'
 
 interface InitialMessageProps {
   onLoad: () => void
+  userInfo?: any
 }
 
-export const InitialMessage = ({ onLoad }: InitialMessageProps) => {
+export const InitialMessage = ({ onLoad, userInfo }: InitialMessageProps) => {
   const [info, setInfo] = useState<ReturnType<typeof getClientInfo>>(null)
-  const infoClosed = false
-  const asciiClosed = false
 
   useEffect(() => {
     setInfo(getClientInfo())
@@ -30,7 +29,7 @@ export const InitialMessage = ({ onLoad }: InitialMessageProps) => {
       </pre>
       {info && (
         <div className="flex flex-col text-orange-300">
-          <RootUser />
+          <RootUser name={userInfo?.plainName} />
           {Object.entries(info).map(([k, v]) => (
             <div
               key={k}
