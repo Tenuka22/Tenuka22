@@ -9,8 +9,10 @@
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx}\"",
-    "check": "prettier --check \"**/*.{ts,tsx,js,jsx}\"",
-    "typecheck": "tsc --noEmit"
+    "check": "ultracite check",
+    "typecheck": "tsc --noEmit",
+    "fix": "ultracite fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -27,6 +29,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cn": "^0.2.6",
+    "lenis": "^1.3.26",
     "motion": "^13.4.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -44,11 +47,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",
-    "eslint": "^9",
+    "husky": "^9.1.7",
     "jsdom": "^30",
-    "prettier": "^3.9.6",
-    "prettier-plugin-tailwindcss": "^0.8.1",
+    "lint-staged": "^17.5.1",
+    "oxfmt": "^0.68.0",
+    "oxlint": "^1.83.0",
+    "oxlint-plugin-react-doctor": "^0.9.13",
     "typescript": "^6",
+    "ultracite": "7.12.0",
     "vite": "^8",
     "vitest": "^4"
   }

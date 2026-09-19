@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/beui/SKILL.md",
       "computedHash": "bff7df8f18d41d96fb1ba26adfed7354c3de9f0bc11669e6e03c9f2b0384b997"
+    },
+    "ultracite": {
+      "source": "haydenbleasel/ultracite",
+      "sourceType": "github",
+      "skillPath": "skills/ultracite/SKILL.md",
+      "computedHash": "94f8c0b39ae60f00d0d003faa8b853fdbde6fc785f36e3475797035500173da3"
     }
   }
 }

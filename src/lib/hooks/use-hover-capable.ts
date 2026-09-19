@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
  * Touch devices fire phantom `:hover` on tap that sticks until tap-elsewhere
  * — gate hover-only effects (scale lifts, magnetic pulls) behind this.
  */
-export function useHoverCapable() {
+export const useHoverCapable = () => {
   const [canHover, setCanHover] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return;
+    }
     const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
     const update = () => setCanHover(mq.matches);
     update();
@@ -20,4 +22,4 @@ export function useHoverCapable() {
   }, []);
 
   return canHover;
-}
+};

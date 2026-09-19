@@ -1,19 +1,11 @@
 "use client";
 
-import {
-  AnimatePresence,
-  type HTMLMotionProps,
-  motion,
-  useReducedMotion,
-} from "motion/react";
-import {
-  forwardRef,
-  type PointerEvent,
-  type ReactNode,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+/* oxlint-disable react-doctor(use-lazy-motion) */
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import type { HTMLMotionProps } from "motion/react";
+import { forwardRef, useCallback, useRef, useState } from "react";
+import type { PointerEvent, ReactNode } from "react";
+
 import { EASE_OUT, SPRING_PRESS } from "@/lib/ease";
 import { useHoverCapable } from "@/lib/hooks/use-hover-capable";
 import { cn } from "@/lib/utils";
@@ -43,7 +35,12 @@ export interface ButtonLinkProps extends Omit<
   children?: ReactNode;
 }
 
-type Ripple = { id: number; x: number; y: number; size: number };
+interface Ripple {
+  id: number;
+  x: number;
+  y: number;
+  rippleSize: number;
+}
 
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -60,8 +57,10 @@ const SIZE_CLASS: Record<ButtonSize, string> = {
   icon: "h-8 w-8 rounded-lg",
 };
 
+// oxlint-disable-next-line react-doctor(use-lazy-motion)
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button(
+  /* oxlint-disable react(function-component-definition) */
+  (
     {
       variant = "primary",
       size = "md",
@@ -72,8 +71,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       onPointerDown,
       ...rest
     },
-    ref,
-  ) {
+    ref
+  ) => {
     const reduce = useReducedMotion();
     const canHover = useHoverCapable();
     const [ripples, setRipples] = useState<Ripple[]>([]);
@@ -83,21 +82,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       (event: PointerEvent<HTMLButtonElement>) => {
         if (ripple && !reduce) {
           const rect = event.currentTarget.getBoundingClientRect();
-          const size = Math.max(rect.width, rect.height) * 2;
-          const id = nextId.current++;
+          const rippleSize = Math.max(rect.width, rect.height) * 2;
+          const id = nextId.current;
+          nextId.current += 1;
           setRipples((prev) => [
             ...prev,
             {
               id,
               x: event.clientX - rect.left,
               y: event.clientY - rect.top,
-              size,
+              rippleSize,
             },
           ]);
         }
         onPointerDown?.(event);
       },
-      [ripple, reduce, onPointerDown],
+      [ripple, reduce, onPointerDown]
     );
 
     return (
@@ -115,7 +115,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           ripple && "relative overflow-hidden",
           VARIANT_CLASS[variant],
           SIZE_CLASS[size],
-          className,
+          className
         )}
         {...rest}
       >
@@ -129,14 +129,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                   style={{
                     left: r.x,
                     top: r.y,
-                    width: r.size,
-                    height: r.size,
+                    width: r.rippleSize,
+                    height: r.rippleSize,
                     x: "-50%",
                     y: "-50%",
                   }}
                   initial={{ scale: 0.05, opacity: 0.3 }}
                   animate={{ scale: 1, opacity: 0 }}
                   exit={{ opacity: 0 }}
+                  // oxlint-disable-next-line react-doctor(no-long-transition-duration)
                   transition={{ duration: 1.6, ease: EASE_OUT }}
                   onAnimationComplete={() =>
                     setRipples((prev) => prev.filter((x) => x.id !== r.id))
@@ -149,11 +150,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </motion.button>
     );
-  },
+  }
 );
+Button.displayName = "Button";
 
+// oxlint-disable-next-line react-doctor(use-lazy-motion)
 export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
-  function ButtonLink(
+  /* oxlint-disable react(function-component-definition) */
+  (
     {
       variant = "primary",
       size = "md",
@@ -162,8 +166,8 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       children,
       ...rest
     },
-    ref,
-  ) {
+    ref
+  ) => {
     const reduce = useReducedMotion();
     const canHover = useHoverCapable();
 
@@ -178,12 +182,13 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
           "transition-colors",
           VARIANT_CLASS[variant],
           SIZE_CLASS[size],
-          className,
+          className
         )}
         {...rest}
       >
         {children}
       </motion.a>
     );
-  },
+  }
 );
+ButtonLink.displayName = "ButtonLink";

@@ -7,9 +7,7 @@ description: Pick and install beUI (@beui) animated React components through pub
 
 Use beUI as copy-paste source through its public MCP or the `@beui` shadcn registry.
 
-See the [AI agents guide](https://beui.dev/docs/ai-agents) for current connection instructions and endpoints.
-The public MCP at `https://mcp.beui.dev/mcp` needs no license key or Pro authentication.
-For licensed components, use the separate `beui-pro` skill and Pro connection.
+See the [AI agents guide](https://beui.dev/docs/ai-agents) for current connection instructions and endpoints. The public MCP at `https://mcp.beui.dev/mcp` needs no license key or Pro authentication. For licensed components, use the separate `beui-pro` skill and Pro connection.
 
 ## Workflow
 

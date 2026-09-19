@@ -1,14 +1,11 @@
 "use client";
 // beui.dev/components/motion/text-animation
 
-import {
-  type MotionStyle,
-  motion,
-  type UseInViewOptions,
-  useInView,
-  useReducedMotion,
-} from "motion/react";
+/* oxlint-disable react-doctor(use-lazy-motion) */
+import { motion, useInView, useReducedMotion } from "motion/react";
+import type { MotionStyle, UseInViewOptions } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import { EASE_IN_OUT, EASE_OUT } from "@/lib/ease";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +21,7 @@ const TRAIL_HALF_WIDTH = 14;
 const REVEAL_START = `-${TRAIL_HALF_WIDTH}%`;
 const REVEAL_FINISH = `${100 + TRAIL_HALF_WIDTH}%`;
 
-export type ChromaticTextRevealProps = {
+export interface ChromaticTextRevealProps {
   /** Sentence fragment that remains fixed while the final word changes. */
   prefix: string;
   /** Words revealed one after another after the fixed prefix. */
@@ -48,9 +45,12 @@ export type ChromaticTextRevealProps = {
   /** IntersectionObserver root margin used by the viewport trigger. */
   inViewMargin?: UseInViewOptions["margin"];
   className?: string;
-};
+}
 
-function composeChromaticGradient(colors: string[], foregroundColor: string) {
+const composeChromaticGradient = (
+  colors: string[],
+  foregroundColor: string
+) => {
   const palette = colors.length > 0 ? colors : CHROMATIC_PALETTE;
   const colorStops = palette.map((color, index) => {
     const offset =
@@ -64,9 +64,10 @@ function composeChromaticGradient(colors: string[], foregroundColor: string) {
   });
 
   return `linear-gradient(90deg, ${foregroundColor} 0%, ${foregroundColor} calc(var(--chromatic-sweep) - ${TRAIL_HALF_WIDTH}%), ${colorStops.join(", ")}, transparent calc(var(--chromatic-sweep) + ${TRAIL_HALF_WIDTH}%), transparent 100%)`;
-}
+};
 
-export function ChromaticTextReveal({
+// oxlint-disable-next-line eslint(complexity), react-doctor(use-lazy-motion)
+export const ChromaticTextReveal = ({
   prefix,
   words,
   colors = CHROMATIC_PALETTE,
@@ -79,7 +80,7 @@ export function ChromaticTextReveal({
   once = true,
   inViewMargin,
   className,
-}: ChromaticTextRevealProps) {
+}: ChromaticTextRevealProps) => {
   const ref = useRef<HTMLSpanElement>(null);
   const timerRef = useRef<number | null>(null);
   const [wordIndex, setWordIndex] = useState(0);
@@ -94,7 +95,7 @@ export function ChromaticTextReveal({
   const hasWords = words.length > 0;
   const activeIndex = hasWords ? wordIndex % words.length : 0;
   const activeWord = words[activeIndex] ?? "";
-  const sizingWords = Array.from(new Set(words));
+  const sizingWords = [...new Set(words)];
 
   const clearPendingWord = useCallback(() => {
     if (timerRef.current !== null) {
@@ -132,7 +133,7 @@ export function ChromaticTextReveal({
 
   return (
     <span ref={ref} className={cn("inline-flex items-baseline", className)}>
-      <span className="whitespace-nowrap text-foreground">
+      <span className="text-foreground whitespace-nowrap">
         {prefix}
         {hasWords ? "\u00A0" : null}
       </span>
@@ -162,9 +163,7 @@ export function ChromaticTextReveal({
                   }
             }
             animate={{
-              "--chromatic-sweep": shouldReveal
-                ? REVEAL_FINISH
-                : REVEAL_START,
+              "--chromatic-sweep": shouldReveal ? REVEAL_FINISH : REVEAL_START,
               opacity: 1,
               filter: "blur(0px)",
               transform: "translateY(0px)",
@@ -184,15 +183,17 @@ export function ChromaticTextReveal({
                 : { duration: 0.36, ease: EASE_OUT },
             }}
             onAnimationComplete={scheduleNextWord}
-            className="absolute start-0 top-0 whitespace-nowrap bg-clip-text text-transparent [background-image:var(--chromatic-gradient)] [contain:paint]"
-            style={{
-              "--chromatic-sweep": reduceMotion
-                ? REVEAL_FINISH
-                : REVEAL_START,
-              "--chromatic-gradient": backgroundImage,
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-            } as MotionStyle}
+            className="absolute start-0 top-0 [background-image:var(--chromatic-gradient)] bg-clip-text whitespace-nowrap text-transparent [contain:paint]"
+            style={
+              {
+                "--chromatic-sweep": reduceMotion
+                  ? REVEAL_FINISH
+                  : REVEAL_START,
+                "--chromatic-gradient": backgroundImage,
+                backgroundSize: "100% 100%",
+                backgroundRepeat: "no-repeat",
+              } as MotionStyle
+            }
           >
             {activeWord}
           </motion.span>
@@ -201,4 +202,4 @@ export function ChromaticTextReveal({
       ) : null}
     </span>
   );
-}
+};

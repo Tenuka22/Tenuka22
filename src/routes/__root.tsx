@@ -1,10 +1,10 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { TanStackDevtools } from "@tanstack/react-devtools"
-import { NavFooter } from "@/components/navigation-footer"
-import { SiteNav } from "@/components/site-nav"
+import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import { ReactLenis } from "lenis/react";
 
-import appCss from "../styles.css?url"
+import { NavFooter } from "@/components/navigation-footer";
+import { SiteNav } from "@/components/site-nav";
+
+import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -34,15 +34,15 @@ export const Route = createRootRoute({
     </main>
   ),
   shellComponent: RootDocument,
-})
+});
 
-function RootDocument({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
+const RootDocument = ({ children }: { children: React.ReactNode }) => (
+  <html lang="en">
+    <head>
+      <HeadContent />
+    </head>
+    <body>
+      <ReactLenis root options={{ duration: 1.2 }}>
         <SiteNav />
         {children}
         {/*<TanStackDevtools
@@ -56,9 +56,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             },
           ]}
         />*/}
-        <NavFooter/>
-        <Scripts />
-      </body>
-    </html>
-  )
-}
+        <NavFooter />
+      </ReactLenis>
+      <Scripts />
+    </body>
+  </html>
+);

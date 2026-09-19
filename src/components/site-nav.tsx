@@ -1,7 +1,13 @@
 "use client";
 
-import { IconBrandGithub, IconMoon, IconSparkles, IconSun } from "@tabler/icons-react";
+import {
+  IconBrandGithub,
+  IconMoon,
+  IconSparkles,
+  IconSun,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+
 import { useTheme } from "@/lib/hooks/use-theme";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +19,7 @@ const NAV_LINKS = [
   { href: "#contact", label: "Contact" },
 ] as const;
 
-export function SiteNav() {
+export const SiteNav = () => {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
 
@@ -28,31 +34,30 @@ export function SiteNav() {
     <header
       className={cn(
         "pointer-events-none fixed inset-x-0 top-0 z-20 w-full transition-[background-color,backdrop-filter,border-color] duration-300",
-        scrolled &&
-          "border-b border-border bg-background/70 backdrop-blur-md",
+        scrolled && "border-border bg-background/70 border-b backdrop-blur-md"
       )}
     >
       <div className="pointer-events-auto mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5 sm:px-12">
         <a
           href="#home"
-          className="flex items-center gap-2 text-sm font-medium tracking-tight text-foreground"
+          className="text-foreground flex items-center gap-2 text-sm font-medium tracking-tight"
         >
           <IconSparkles className="size-4" />
           Tenuka Omaljith
         </a>
 
-        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+        <nav className="text-muted-foreground hidden items-center gap-8 text-sm md:flex">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
               className={cn(
-                "relative flex flex-row items-center gap-1.5 transition-colors hover:text-foreground",
-                link.label === "Home" && "text-foreground",
+                "hover:text-foreground relative flex flex-row items-center gap-1.5 transition-colors",
+                link.label === "Home" && "text-foreground"
               )}
             >
               {link.label === "Home" ? (
-                <span className="size-1 rounded-full bg-foreground" />
+                <span className="bg-foreground size-1 rounded-full" />
               ) : null}
               {link.label}
             </a>
@@ -64,7 +69,7 @@ export function SiteNav() {
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="flex size-9 items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur-md transition-colors hover:bg-accent"
+            className="border-border bg-background/60 text-foreground hover:bg-accent flex size-9 items-center justify-center rounded-full border backdrop-blur-md transition-colors"
           >
             {theme === "dark" ? (
               <IconMoon className="size-4" />
@@ -76,7 +81,7 @@ export function SiteNav() {
             href="https://github.com/Tenuka22"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground backdrop-blur-md transition-colors hover:bg-accent"
+            className="border-border bg-background/60 text-foreground hover:bg-accent flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium backdrop-blur-md transition-colors"
           >
             <IconBrandGithub className="size-4" />
             GitHub
@@ -85,4 +90,4 @@ export function SiteNav() {
       </div>
     </header>
   );
-}
+};
