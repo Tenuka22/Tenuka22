@@ -121,6 +121,7 @@
     @apply border-border outline-ring/50;
   }
   body {
+    scrollbar-gutter: stable;
     @apply bg-background text-foreground;
   }
   button:not(:disabled),

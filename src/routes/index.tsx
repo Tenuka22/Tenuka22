@@ -39,7 +39,7 @@ const App = () => {
   const { theme } = useTheme();
 
   return (
-    <div className="relative flex h-[300vh] min-h-svh flex-col">
+    <div className="relative flex min-h-svh flex-col">
       <ShaderBackground
         variant="grain-gradient"
         colors={
@@ -91,9 +91,9 @@ const App = () => {
           </div>
         </div>
 
-        <div className="mt-auto flex flex-col gap-4">
+        <div className="mt-auto flex flex-row gap-4">
           <span className="bg-border h-8 w-px" />
-          <span className="flex flex-col gap-2">
+          <span className="flex flex-row gap-2">
             Scroll to explore
             <span aria-hidden>↓</span>
           </span>
