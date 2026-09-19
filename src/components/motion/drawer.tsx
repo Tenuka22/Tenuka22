@@ -77,7 +77,6 @@ export const Drawer = ({
 
   return createPortal(
     <div
-      ref={portalRef}
       data-lenis-prevent="data-lenis-prevent"
       onWheelCapture={stopScrollPropagation}
       onTouchMoveCapture={stopTouchPropagation}
