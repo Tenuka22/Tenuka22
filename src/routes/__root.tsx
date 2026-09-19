@@ -6,6 +6,33 @@ import { SiteNav } from "@/components/site-nav";
 
 import appCss from "../styles.css?url";
 
+const RootDocument = ({ children }: { children: React.ReactNode }) => (
+  <html lang="en">
+    <head>
+      <HeadContent />
+    </head>
+    <body>
+      <ReactLenis root options={{ duration: 1.2 }}>
+        <SiteNav />
+        {children}
+        {/*<TanStackDevtools
+          config={{
+            position: "bottom-right",
+          }}
+          plugins={[
+            {
+              name: "Tanstack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />*/}
+        <NavFooter />
+      </ReactLenis>
+      <Scripts />
+    </body>
+  </html>
+);
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -35,30 +62,3 @@ export const Route = createRootRoute({
   ),
   shellComponent: RootDocument,
 });
-
-const RootDocument = ({ children }: { children: React.ReactNode }) => (
-  <html lang="en">
-    <head>
-      <HeadContent />
-    </head>
-    <body>
-      <ReactLenis root options={{ duration: 1.2 }}>
-        <SiteNav />
-        {children}
-        {/*<TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
-          plugins={[
-            {
-              name: "Tanstack Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />*/}
-        <NavFooter />
-      </ReactLenis>
-      <Scripts />
-    </body>
-  </html>
-);
