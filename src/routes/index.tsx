@@ -1,7 +1,7 @@
 import {
   IconBrandGithub,
+  IconBrandInstagram,
   IconBrandLinkedin,
-  IconBrandX,
   IconMail,
 } from "@tabler/icons-react";
 import { ChromaticTextReveal } from "@/components/motion/chromatic-text-reveal";
@@ -9,6 +9,8 @@ import { Input } from "@/components/motion/input";
 import { ShaderBackground } from "@/components/motion/shader-background";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { createFileRoute } from "@tanstack/react-router";
+import { NavFooter } from "@/components/navigation-footer";
+import { Button } from "@/components/motion/button/base";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -19,7 +21,11 @@ const SOCIAL_LINKS = [
     label: "LinkedIn",
     href: "https://linkedin.com/in/tenuka-omaljith-31b61538a",
   },
-  { icon: IconBrandX, label: "X", href: "https://x.com/tenuka22" },
+  {
+    icon: IconBrandInstagram,
+    label: "Instagram",
+    href: "https://www.instagram.com/tenuka22/",
+  },
   { icon: IconMail, label: "Email", href: "mailto:tenukaomaljith2009@gmail.com" },
 ] as const;
 
@@ -42,20 +48,15 @@ function App() {
       />
       <div
         id="home"
-        className="relative z-10 flex min-h-svh w-full max-w-5xl flex-col justify-center gap-10 px-6 pt-28 pb-16 sm:px-12"
+        className="relative z-10 flex min-h-svh w-full max-w-5xl flex-col justify-center gap-10 px-6 pt-28 pb-16 sm:px-12 mx-auto"
       >
-        <div className="flex flex-col items-start gap-6">
-          <span className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur-md">
-            <span className="size-1.5 rounded-full bg-emerald-500" />
-            Web Developer
-          </span>
-
-          <div className="@container flex w-full justify-start leading-tighter">
+        <div className="flex flex-col items-start gap-6 pt-14">
+          <div className="@container w-full">
             <ChromaticTextReveal
               prefix="Tenuka Omaljith,"
               words={["Website Developer", "Systems Engineer.", "Backend Architec."]}
               startOnView={false}
-              className="shrink-0 flex-col font-medium tracking-[-0.04em] text-foreground [font-size:clamp(1.25rem,7.8cqw,3rem)]"
+              className="shrink-0 flex-col font-medium leading-[1.12] tracking-[-0.1rem] text-foreground [font-size:clamp(1.25rem,7.8cqw,3rem)]"
             />
           </div>
 
@@ -81,33 +82,13 @@ function App() {
         </div>
 
         <div className="mt-auto flex flex-col gap-4">
-          <Input
-            label="Lets work, Send a DM"
-            classNames={{
-              input: "bg-background/30 backdrop-blur-md",
-            }}
-            rightIcon={
-              <button
-                type="button"
-                aria-label="Send"
-                className="pointer-events-auto flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground"
-              >
-                →
-              </button>
-            }
-            className="max-w-96"
-            placeholder="you@example.com"
-            reserveErrorLine
-          />
-
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-8 w-px bg-border" />
             <span className="flex flex-col gap-2">
               Scroll to explore
               <span aria-hidden>↓</span>
             </span>
-          </div>
-        </div>
+            </div>
+
       </div>
     </div>
   );

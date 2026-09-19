@@ -1,6 +1,7 @@
 "use client";
 
 import { IconBrandGithub, IconMoon, IconSparkles, IconSun } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@/lib/hooks/use-theme";
 import { cn } from "@/lib/utils";
 
@@ -14,57 +15,73 @@ const NAV_LINKS = [
 
 export function SiteNav() {
   const { theme, toggleTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-20 flex w-full items-center justify-between px-6 py-5 sm:px-10">
-      <a
-        href="#home"
-        className="flex items-center gap-2 text-sm font-medium tracking-tight text-foreground"
-      >
-        <IconSparkles className="size-4" />
-        Tenuka Omaljith
-      </a>
-
-      <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-        {NAV_LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            className={cn(
-              "relative flex flex-col items-center gap-1.5 transition-colors hover:text-foreground",
-              link.label === "Home" && "text-foreground",
-            )}
-          >
-            {link.label}
-            {link.label === "Home" ? (
-              <span className="size-1 rounded-full bg-foreground" />
-            ) : null}
-          </a>
-        ))}
-      </nav>
-
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          className="flex size-9 items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur-md transition-colors hover:bg-accent"
-        >
-          {theme === "dark" ? (
-            <IconMoon className="size-4" />
-          ) : (
-            <IconSun className="size-4" />
-          )}
-        </button>
+    <header
+      className={cn(
+        "pointer-events-none fixed inset-x-0 top-0 z-20 w-full transition-[background-color,backdrop-filter,border-color] duration-300",
+        scrolled &&
+          "border-b border-border bg-background/70 backdrop-blur-md",
+      )}
+    >
+      <div className="pointer-events-auto mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5 sm:px-12">
         <a
-          href="https://github.com/Tenuka22"
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground backdrop-blur-md transition-colors hover:bg-accent"
+          href="#home"
+          className="flex items-center gap-2 text-sm font-medium tracking-tight text-foreground"
         >
-          <IconBrandGithub className="size-4" />
-          GitHub
+          <IconSparkles className="size-4" />
+          Tenuka Omaljith
         </a>
+
+        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "relative flex flex-row items-center gap-1.5 transition-colors hover:text-foreground",
+                link.label === "Home" && "text-foreground",
+              )}
+            >
+              {link.label === "Home" ? (
+                <span className="size-1 rounded-full bg-foreground" />
+              ) : null}
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="flex size-9 items-center justify-center rounded-full border border-border bg-background/60 text-foreground backdrop-blur-md transition-colors hover:bg-accent"
+          >
+            {theme === "dark" ? (
+              <IconMoon className="size-4" />
+            ) : (
+              <IconSun className="size-4" />
+            )}
+          </button>
+          <a
+            href="https://github.com/Tenuka22"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm font-medium text-foreground backdrop-blur-md transition-colors hover:bg-accent"
+          >
+            <IconBrandGithub className="size-4" />
+            GitHub
+          </a>
+        </div>
       </div>
     </header>
   );

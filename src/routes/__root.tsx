@@ -44,7 +44,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <SiteNav />
-        <NavFooter />
         {children}
         {/*<TanStackDevtools
           config={{
@@ -57,6 +56,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             },
           ]}
         />*/}
+        <NavFooter/>
         <Scripts />
       </body>
     </html>

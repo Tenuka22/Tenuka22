@@ -42,7 +42,9 @@ export function useTheme() {
 
     const listener: Listener = (next) => setThemeState(next);
     listeners.add(listener);
-    return () => listeners.delete(listener);
+    return () => {
+      listeners.delete(listener);
+    };
   }, []);
 
   const setTheme = useCallback((next: Theme) => {
