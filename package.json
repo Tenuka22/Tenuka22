@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "fix": "ultracite fix",
     "prepare": "husky",
-    "screenshots": "bun run scripts/capture-project-screenshots.ts"
+    "screenshots": "bun run scripts/capture-project-screenshots.ts",
+    "brand": "bun run scripts/generate-brand-assets.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

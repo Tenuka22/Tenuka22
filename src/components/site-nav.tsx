@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  IconBrandGithub,
-  IconMoon,
-  IconSparkles,
-  IconSun,
-} from "@tabler/icons-react";
+import { IconBrandGithub, IconMoon, IconSun } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 import { useTheme } from "@/lib/hooks/use-theme";
@@ -40,9 +35,15 @@ export const SiteNav = () => {
       <div className="pointer-events-auto mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5 sm:px-12">
         <a
           href="#home"
-          className="text-foreground flex items-center gap-2 text-sm font-medium tracking-tight"
+          className="text-foreground group flex items-center gap-3 py-1 text-sm font-medium tracking-tight"
         >
-          <IconSparkles className="size-4" />
+          <img
+            src="/favicon.svg"
+            alt=""
+            width={32}
+            height={32}
+            className="size-8 shrink-0 rounded-lg shadow-sm transition-transform duration-300 group-hover:scale-105"
+          />
           Tenuka Omaljith
         </a>
 
