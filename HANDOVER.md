@@ -66,9 +66,11 @@ To add a project: add an entry, then run `bun run screenshots <slug>` to capture
 Entries added this session:
 
 - `aloysiusadmissions` — Grade 1 admissions portal, `admissions.aloysiuscollege.lk`
+- `aloysiusmgmt` — internal staff/parent platform (attendance, exams, timetables, fees), `mgmt.aloysiuscollege.lk`
+- `bytequest` — inter-school coding programme site, `bytequest.aloysiuscollege.lk`
 - `lithon` — statically-typed Python-syntax language compiler, `project-lithon.github.io`
 
-`stephanstyremart` now sits last in the array; the order is the display order.
+The three Aloysius entries are deliberately adjacent in the array — `aloysiuscollege` frames the umbrella programme, `aloysiusmgmt` and `aloysiusadmissions` are the two public-facing surfaces built out of it. `stephanstyremart` now sits last in the array; the order is the display order.
 
 ### 2. Brand assets are generated, not hand-drawn
 

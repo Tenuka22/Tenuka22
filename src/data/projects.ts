@@ -67,9 +67,9 @@ export const PROJECTS: Project[] = [
   {
     slug: "aloysiuscollege",
     title: "St. Aloysius' College",
-    tagline: "School administration & admissions platform",
+    tagline: "College-wide digital programme for a Galle school",
     description:
-      "Administration system for a 130-year-old school in Galle, handling student and teacher records, admissions intake and day-to-day school operations for staff.",
+      "Umbrella programme of work for a 130-year-old school in Galle: the public college site, the Grade 1 admissions portal and the internal systems sitting behind them, built as one coherent platform rather than three unrelated builds.",
     role: "Systems Engineer",
     year: "2025",
     tech: ["TypeScript", "React", "PostgreSQL"],
@@ -77,11 +77,30 @@ export const PROJECTS: Project[] = [
     image: "/projects/aloysiuscollege.webp",
     requirements: [
       "Admissions intake was running through paper forms and needed to move online",
-      "Staff needed one system for student and teacher records instead of scattered spreadsheets",
-      "The system had to hold up for a 130-year-old institution with non-technical administrative staff",
+      "Each system had to be usable by non-technical administrative staff without training",
+      "Admissions content changes every cycle, so it could not be baked into school-wide pages",
     ],
     story:
-      "This was less about a flashy front end and more about getting the data model right: students, teachers and admissions intake all needed to live in one consistent system that admin staff could actually operate day to day, with the public site kept deliberately simple.",
+      "The work grew out of one observation: the college was paying for the same problem three times over. Fixing it meant agreeing on a single data model and a shared set of roles first, then splitting the delivery into a public site, an admissions portal and an internal system, each simple enough that the people actually operating it never need a developer.",
+  },
+  {
+    slug: "aloysiusmgmt",
+    title: "School Management System",
+    tagline: "Attendance, exams, timetables and fees for staff and parents",
+    description:
+      "Authenticated internal platform for St. Aloysius' College, Galle, covering attendance, examinations, results, timetables, leave and fees in one place for staff, students and parents.",
+    role: "Systems Engineer",
+    year: "2025",
+    tech: ["TypeScript", "Next.js", "PostgreSQL"],
+    url: "https://mgmt.aloysiuscollege.lk/",
+    image: "/projects/aloysiusmgmt.webp",
+    requirements: [
+      "Every module had to be role-gated, since staff, students and parents each see a different slice of the same data",
+      "Self-registration could not grant access outright — an administrator or the Principal verifies establishment before a role is issued",
+      "Attendance and results are the two things a school is judged on, so both had to be single-source and auditable",
+    ],
+    story:
+      "A school runs on the same handful of records all year, so the work was in the model rather than the screens: one student, one staff record, one timetable, with attendance and results derived rather than re-entered. Registration is deliberately open but useless on its own — access is granted afterwards by someone who can confirm the person is on the College establishment, and every action is logged.",
   },
   {
     slug: "aloysiusadmissions",
@@ -101,6 +120,25 @@ export const PROJECTS: Project[] = [
     ],
     story:
       "This is the public face of the college's admissions system: a small, deliberately focused site where the schedule, resources and contact paths are all one tap away. Keeping it separate from the main college site meant admissions content could change as the cycle progressed without anyone touching school-wide pages.",
+  },
+  {
+    slug: "bytequest",
+    title: "BYTE QUEST",
+    tagline: "Site for a three-month inter-school coding programme",
+    description:
+      "Programme site for BYTE QUEST, a three-month inter-school innovation and coding programme run by the St. Aloysius' College Old Boys' Association, covering the twelve-week journey, the junior and senior divisions, milestones, mentors, partners and volunteer sign-ups.",
+    role: "Website Developer",
+    year: "2026",
+    tech: ["TypeScript", "Next.js", "Tailwind CSS"],
+    url: "https://bytequest.aloysiuscollege.lk/",
+    image: "/projects/bytequest.webp",
+    requirements: [
+      "The programme changes week by week, so the journey timeline needed to be readable and updatable without a redesign",
+      "Two age divisions with different briefs, platforms and judging criteria had to be scannable side by side",
+      "Recruitment runs through volunteers, mentors and partners, so each audience needed its own clear path in",
+    ],
+    story:
+      "The brief was to make twelve weeks of structure feel like one journey rather than a pile of announcements. The week-by-week timeline anchors the page and everything else hangs off it — phases, the two hackathons and the grand final, plus separate junior and senior tracks so a Grade 6 parent and a Grade 12 student both find the challenge meant for them without wading through the other's.",
   },
   {
     slug: "lithon",
