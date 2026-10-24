@@ -15,13 +15,20 @@ export const AboutSection = () => (
     <SectionHeading eyebrow="About" title="Who I am" />
 
     <Reveal className="flex max-w-2xl flex-col gap-4">
-      <AnimatedBadge
-        className="w-fit"
-        icon={<IconPlaneTilt className="size-3.5" />}
-        status="info"
-      >
-        Open to work · Sri Lanka (UTC+5:30) · replies within a day
-      </AnimatedBadge>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <AnimatedBadge
+          icon={<IconPlaneTilt className="size-3.5" />}
+          status="info"
+        >
+          Open to work
+        </AnimatedBadge>
+        <AnimatedBadge status="info" showIcon={false}>
+          Sri Lanka (UTC+5:30)
+        </AnimatedBadge>
+        <AnimatedBadge status="info" showIcon={false}>
+          Replies within a day
+        </AnimatedBadge>
+      </div>
 
       <p className="text-foreground text-base leading-relaxed sm:text-lg">
         I&apos;m Tenuka, a website developer and systems engineer building fast,

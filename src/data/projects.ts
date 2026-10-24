@@ -55,6 +55,7 @@ export const PROJECTS: Project[] = [
     year: "2025",
     tech: ["TypeScript", "React", "Tailwind CSS"],
     url: "https://lunabarro.com/",
+    captureDelayMs: 8000,
     image: "/projects/lunabarro.webp",
     requirements: [
       "Needed to read as a premium ceramics brand, not a generic storefront template",
@@ -73,7 +74,8 @@ export const PROJECTS: Project[] = [
     role: "Systems Engineer",
     year: "2025",
     tech: ["TypeScript", "React", "PostgreSQL"],
-    url: "http://aloysiuscollege.lk/",
+    url: "https://aloysiuscollege.lk/",
+    captureDelayMs: 10_000,
     image: "/projects/aloysiuscollege.webp",
     requirements: [
       "Admissions intake was running through paper forms and needed to move online",
@@ -149,7 +151,7 @@ export const PROJECTS: Project[] = [
     role: "Compiler Engineer",
     year: "2026",
     tech: ["C++20", "Python", "x64 Assembly"],
-    url: "https://project-lithon.github.io/Lithon/src/index.html",
+    url: "https://project-lithon.github.io/Lithon/",
     image: "/projects/lithon.webp",
     requirements: [
       "Python's readability without paying for boxed integers, refcounting and GC pauses",
