@@ -45,7 +45,7 @@ const App = () => {
       <ShapeGrid
         borderColor={theme === "dark" ? "#333" : "#ccc"}
         hoverFillColor={theme === "dark" ? "#1a1a2e" : "#f0f0f5"}
-        className="absolute inset-0 -z-10 h-full w-full opacity-50"
+        className="pointer-events-none fixed inset-0 -z-10 h-svh w-full opacity-50"
         direction="diagonal"
         speed={0.3}
         squareSize={50}
